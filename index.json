@@ -1,7 +1,35 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-04-21T01:35:00+08:00",
+  "generated_at": "2026-04-21T21:05:46.652633Z",
   "profiles": [
+    {
+      "id": "dimensity-9400-gaming",
+      "name": "天玑 9400 游戏配置",
+      "author": "appopthub",
+      "version": "1.0.0",
+      "summary": "偏向游戏前台和渲染线程的保守加速配置。",
+      "target_socs": [
+        "dimensity 9400",
+        "mt6991"
+      ],
+      "brands": [
+        "vivo",
+        "iQOO"
+      ],
+      "android_range": {
+        "min_api": 31,
+        "max_api": 36
+      },
+      "module_version": "1.6.3",
+      "tags": [
+        "game",
+        "render",
+        "fg"
+      ],
+      "download_url": "https://raw.githubusercontent.com/Hakunm/appopthub-configs/main/packages/dimensity-9400-gaming.zip",
+      "sha256": "9dee97a7622f0f3891e521c5159c57f37f46d61db77b3c1d3dd1bee787261764",
+      "updated_at": "2026-04-21T00:05:00+08:00"
+    },
     {
       "id": "snapdragon-8-elite-balanced",
       "name": "骁龙 8 Elite 均衡配置",
@@ -32,32 +60,24 @@
       "updated_at": "2026-04-21T00:00:00+08:00"
     },
     {
-      "id": "dimensity-9400-gaming",
-      "name": "天玑 9400 游戏配置",
-      "author": "appopthub",
+      "id": "test2",
+      "name": "test2",
+      "author": "test",
       "version": "1.0.0",
-      "summary": "偏向游戏前台和渲染线程的保守加速配置。",
+      "summary": "test",
       "target_socs": [
-        "dimensity 9400",
-        "mt6991"
+        "test"
       ],
-      "brands": [
-        "vivo",
-        "iQOO"
-      ],
+      "brands": [],
       "android_range": {
         "min_api": 31,
         "max_api": 36
       },
       "module_version": "1.6.3",
-      "tags": [
-        "game",
-        "render",
-        "fg"
-      ],
-      "download_url": "https://raw.githubusercontent.com/Hakunm/appopthub-configs/main/packages/dimensity-9400-gaming.zip",
-      "sha256": "9dee97a7622f0f3891e521c5159c57f37f46d61db77b3c1d3dd1bee787261764",
-      "updated_at": "2026-04-21T00:05:00+08:00"
+      "tags": [],
+      "download_url": "https://raw.githubusercontent.com/Hakunm/appopthub-configs/main/packages/test2.zip",
+      "sha256": "e31a63c6b5ba5e4c90ed2e16c4bd5f426d4a0244e4b95062a5bb6d3bb7ff4e7e",
+      "updated_at": "2026-04-21T21:05:46.652633Z"
     }
   ]
 }
