@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-04-21T21:05:46.652633Z",
+  "generated_at": "2026-04-21T21:07:28.567487Z",
   "profiles": [
     {
       "id": "dimensity-9400-gaming",
@@ -58,26 +58,6 @@
       "download_url": "https://raw.githubusercontent.com/Hakunm/appopthub-configs/main/packages/snapdragon-8-elite-balanced.zip",
       "sha256": "e7128e74e23e6c9b7d8b6f52464794b9ca4be57a032554e2eaa8b490f0689aa0",
       "updated_at": "2026-04-21T00:00:00+08:00"
-    },
-    {
-      "id": "test2",
-      "name": "test2",
-      "author": "test",
-      "version": "1.0.0",
-      "summary": "test",
-      "target_socs": [
-        "test"
-      ],
-      "brands": [],
-      "android_range": {
-        "min_api": 31,
-        "max_api": 36
-      },
-      "module_version": "1.6.3",
-      "tags": [],
-      "download_url": "https://raw.githubusercontent.com/Hakunm/appopthub-configs/main/packages/test2.zip",
-      "sha256": "e31a63c6b5ba5e4c90ed2e16c4bd5f426d4a0244e4b95062a5bb6d3bb7ff4e7e",
-      "updated_at": "2026-04-21T21:05:46.652633Z"
     }
   ]
 }
