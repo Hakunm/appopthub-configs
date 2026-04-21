@@ -1,0 +1,16 @@
+{
+  "id": "example-soc-profile",
+  "name": "示例处理器配置",
+  "author": "your-name",
+  "version": "1.0.0",
+  "summary": "一句话说明这个配置适合什么设备与倾向。",
+  "target_socs": [
+    "example soc",
+    "board-code"
+  ],
+  "tested_devices": [
+    "Brand Model"
+  ],
+  "module_version": "1.6.3",
+  "created_at": "2026-04-21T00:00:00+08:00"
+}

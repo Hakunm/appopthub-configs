@@ -1,0 +1,29 @@
+name: 仓库问题 / 运营问题
+description: 报告 index、下载地址、校验脚本、发布节奏等问题
+title: "[repo] "
+body:
+  - type: dropdown
+    id: category
+    attributes:
+      label: 问题分类
+      options:
+        - index.json
+        - 下载链接 / sha256
+        - GitHub Actions 校验
+        - 模板 / 文档
+        - 运营流程
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: 详细描述
+      placeholder: 说明你遇到的问题、期望行为和复现方式
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: 上下文
+      description: 可选填写 issue / PR / tag / profile id / 设备信息
+      placeholder: configs-20260422.1 / profile id / PR 链接

@@ -1,0 +1,53 @@
+name: 配置修正 / 下架
+description: 报告已发布 profile 的问题，或申请更新、回滚、下架
+title: "[update] "
+labels:
+  - update
+body:
+  - type: markdown
+    attributes:
+      value: |
+        这个模板适合补充说明已发布配置的问题、更新需求或下架需求。
+  - type: input
+    id: profile_id
+    attributes:
+      label: Profile id
+      placeholder: snapdragon-8-elite-balanced
+    validations:
+      required: true
+  - type: dropdown
+    id: change_type
+    attributes:
+      label: 类型
+      options:
+        - 修正规则
+        - 补充 README / 元数据
+        - 扩大适用范围
+        - 回滚
+        - 下架
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: 问题描述
+      description: 请说明现在的 profile 有什么问题，或为什么需要更新
+      placeholder: 在某些机型上动画线程绑定过激，导致桌面偶发卡顿
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: 影响范围
+      description: 受影响的 SoC、机型、Android 版本、使用场景
+      placeholder: Xiaomi 15 / HyperOS 3 / 日用桌面场景
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 建议处理方式
+      description: 说明你建议维护者怎么处理
+      placeholder: 从 index 暂时下架，等补测试后再重新上架
+    validations:
+      required: true

@@ -1,0 +1,160 @@
+name: Publish Config From Submission
+
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: publish or unpublish
+        required: true
+        default: publish
+        type: string
+      submission_id:
+        description: Submission ID from Cloudflare config admin
+        required: false
+        type: string
+      profile_id:
+        description: Published profile id to unpublish
+        required: false
+        type: string
+      delete_package:
+        description: Remove matching package zip when unpublishing
+        required: false
+        default: "true"
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout config repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Fetch submission export
+        if: ${{ github.event.inputs.operation == 'publish' }}
+        env:
+          CONFIG_ADMIN_BASE_URL: ${{ secrets.CONFIG_ADMIN_BASE_URL }}
+          CONFIG_ADMIN_INTERNAL_TOKEN: ${{ secrets.CONFIG_ADMIN_INTERNAL_TOKEN }}
+          SUBMISSION_ID: ${{ github.event.inputs.submission_id }}
+        run: |
+          curl -fsSL \
+            -H "Authorization: Bearer ${CONFIG_ADMIN_INTERNAL_TOKEN}" \
+            "${CONFIG_ADMIN_BASE_URL}/api/internal/submissions/${SUBMISSION_ID}/export" \
+            -o submission.json
+
+      - name: Download submission source
+        if: ${{ github.event.inputs.operation == 'publish' }}
+        env:
+          CONFIG_ADMIN_BASE_URL: ${{ secrets.CONFIG_ADMIN_BASE_URL }}
+          CONFIG_ADMIN_INTERNAL_TOKEN: ${{ secrets.CONFIG_ADMIN_INTERNAL_TOKEN }}
+          SUBMISSION_ID: ${{ github.event.inputs.submission_id }}
+        run: |
+          curl -fsSL \
+            -H "Authorization: Bearer ${CONFIG_ADMIN_INTERNAL_TOKEN}" \
+            "${CONFIG_ADMIN_BASE_URL}/api/internal/submissions/${SUBMISSION_ID}/source" \
+            -o submission.bin
+
+      - name: Build package and update index
+        if: ${{ github.event.inputs.operation == 'publish' }}
+        env:
+          PUBLIC_INDEX_BASE_URL: ${{ vars.PUBLIC_INDEX_BASE_URL }}
+        run: |
+          python3 .platform/publish_submission.py \
+            --mode publish \
+            --export-json submission.json \
+            --source-file submission.bin \
+            --repo-root . \
+            --public-base-url "${PUBLIC_INDEX_BASE_URL}"
+
+      - name: Remove published profile from index
+        if: ${{ github.event.inputs.operation == 'unpublish' }}
+        env:
+          PUBLIC_INDEX_BASE_URL: ${{ vars.PUBLIC_INDEX_BASE_URL }}
+        run: |
+          python3 .platform/publish_submission.py \
+            --mode unpublish \
+            --profile-id "${{ github.event.inputs.profile_id }}" \
+            --repo-root . \
+            --public-base-url "${PUBLIC_INDEX_BASE_URL}" \
+            --delete-package "${{ github.event.inputs.delete_package }}"
+
+      - name: Validate repository
+        run: python3 scripts/validate_configs.py
+
+      - name: Commit and push
+        id: commit
+        run: |
+          git config user.name "appopthub-config-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add index.json packages/
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            echo "commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ "${{ github.event.inputs.operation }}" = "unpublish" ]; then
+            git commit -m "unpublish profile ${{ github.event.inputs.profile_id }}"
+          else
+            git commit -m "publish submission ${{ github.event.inputs.submission_id }}"
+          fi
+          echo "commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          git push
+
+      - name: Report success to platform
+        if: ${{ success() && github.event.inputs.operation == 'publish' }}
+        env:
+          CONFIG_ADMIN_BASE_URL: ${{ secrets.CONFIG_ADMIN_BASE_URL }}
+          CONFIG_ADMIN_INTERNAL_TOKEN: ${{ secrets.CONFIG_ADMIN_INTERNAL_TOKEN }}
+          SUBMISSION_ID: ${{ github.event.inputs.submission_id }}
+        run: |
+          curl -fsSL -X POST \
+            -H "Authorization: Bearer ${CONFIG_ADMIN_INTERNAL_TOKEN}" \
+            -H "Content-Type: application/json" \
+            "${CONFIG_ADMIN_BASE_URL}/api/internal/submissions/${SUBMISSION_ID}/publish-result" \
+            -d "{\"status\":\"published\",\"commit_sha\":\"${{ steps.commit.outputs.commit_sha }}\"}"
+
+      - name: Report failure to platform
+        if: ${{ failure() && github.event.inputs.operation == 'publish' }}
+        env:
+          CONFIG_ADMIN_BASE_URL: ${{ secrets.CONFIG_ADMIN_BASE_URL }}
+          CONFIG_ADMIN_INTERNAL_TOKEN: ${{ secrets.CONFIG_ADMIN_INTERNAL_TOKEN }}
+          SUBMISSION_ID: ${{ github.event.inputs.submission_id }}
+        run: |
+          curl -fsSL -X POST \
+            -H "Authorization: Bearer ${CONFIG_ADMIN_INTERNAL_TOKEN}" \
+            -H "Content-Type: application/json" \
+            "${CONFIG_ADMIN_BASE_URL}/api/internal/submissions/${SUBMISSION_ID}/publish-result" \
+            -d "{\"status\":\"publish_failed\",\"error\":\"GitHub Actions publish failed\"}"
+
+      - name: Report unpublish success to platform
+        if: ${{ success() && github.event.inputs.operation == 'unpublish' }}
+        env:
+          CONFIG_ADMIN_BASE_URL: ${{ secrets.CONFIG_ADMIN_BASE_URL }}
+          CONFIG_ADMIN_INTERNAL_TOKEN: ${{ secrets.CONFIG_ADMIN_INTERNAL_TOKEN }}
+          PROFILE_ID: ${{ github.event.inputs.profile_id }}
+        run: |
+          curl -fsSL -X POST \
+            -H "Authorization: Bearer ${CONFIG_ADMIN_INTERNAL_TOKEN}" \
+            -H "Content-Type: application/json" \
+            "${CONFIG_ADMIN_BASE_URL}/api/internal/profiles/${PROFILE_ID}/unpublish-result" \
+            -d "{\"status\":\"unpublished\",\"commit_sha\":\"${{ steps.commit.outputs.commit_sha }}\"}"
+
+      - name: Report unpublish failure to platform
+        if: ${{ failure() && github.event.inputs.operation == 'unpublish' }}
+        env:
+          CONFIG_ADMIN_BASE_URL: ${{ secrets.CONFIG_ADMIN_BASE_URL }}
+          CONFIG_ADMIN_INTERNAL_TOKEN: ${{ secrets.CONFIG_ADMIN_INTERNAL_TOKEN }}
+          PROFILE_ID: ${{ github.event.inputs.profile_id }}
+        run: |
+          curl -fsSL -X POST \
+            -H "Authorization: Bearer ${CONFIG_ADMIN_INTERNAL_TOKEN}" \
+            -H "Content-Type: application/json" \
+            "${CONFIG_ADMIN_BASE_URL}/api/internal/profiles/${PROFILE_ID}/unpublish-result" \
+            -d "{\"status\":\"unpublish_failed\",\"error\":\"GitHub Actions unpublish failed\"}"

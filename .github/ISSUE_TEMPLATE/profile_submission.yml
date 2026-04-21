@@ -1,0 +1,72 @@
+name: 新配置提名
+description: 提交一个尚未整理成 PR 的新配置候选
+title: "[submission] "
+labels:
+  - submission
+body:
+  - type: markdown
+    attributes:
+      value: |
+        优先建议直接使用投稿页：`https://opthub-up.hakunmatata.top/`。  
+        这个模板主要用于你暂时不方便走投稿页、但仍想先把配置候选登记进协作流程的场景。  
+        如果你已经准备好了 zip、sha256 和 `index.json` 修改，请直接提 PR。
+  - type: input
+    id: name
+    attributes:
+      label: 配置名称
+      description: 例如“骁龙 8 Elite 均衡配置”
+      placeholder: 输入你建议的配置名称
+    validations:
+      required: true
+  - type: input
+    id: profile_id
+    attributes:
+      label: 建议的 profile id
+      description: 推荐使用 soc-profile-variant 风格
+      placeholder: snapdragon-8-elite-balanced
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: 配置简介
+      description: 说明这个配置偏日用、偏游戏、偏均衡还是偏激进
+      placeholder: 面向双超大核机型的日用与游戏混合配置
+    validations:
+      required: true
+  - type: textarea
+    id: socs
+    attributes:
+      label: SoC 与设备信息
+      description: 请填写 SoC 标识、机型、品牌、Android 版本
+      placeholder: |
+        SoC: sm8750 / Snapdragon 8 Elite
+        Device: Xiaomi 15 Pro
+        Android: 16
+    validations:
+      required: true
+  - type: textarea
+    id: config_source
+    attributes:
+      label: 配置来源
+      description: 粘贴 `.conf`、zip 下载地址、网盘链接、gist 或核心内容
+      placeholder: 贴链接或直接贴关键规则片段
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: 验证情况
+      description: 请说明你实际测试过什么、效果如何、是否有风险
+      placeholder: 日用顺滑、游戏前台稳定，暂未观察到耗电异常
+    validations:
+      required: true
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: 提交前确认
+      options:
+        - label: 我知道维护者可能会要求我补 README、风险说明或更多设备信息
+          required: true
+        - label: 我理解公开仓库不保证“通用最优”，适用范围必须写清楚
+          required: true
