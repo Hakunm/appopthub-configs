@@ -1,5 +1,27 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-04-22T09:58:12.389055Z",
-  "profiles": []
+  "generated_at": "2026-04-22T10:08:10.533664Z",
+  "profiles": [
+    {
+      "id": "test",
+      "name": "test",
+      "author": "test",
+      "contact": "",
+      "version": "1.0.0",
+      "summary": "test",
+      "target_socs": [
+        "test"
+      ],
+      "brands": [],
+      "android_range": {
+        "min_api": 31,
+        "max_api": 36
+      },
+      "module_version": "1.6.3",
+      "tags": [],
+      "download_url": "https://raw.githubusercontent.com/Hakunm/appopthub-configs/main/packages/test.zip",
+      "sha256": "cd5ed64ab76057526e610ae36e251f17afb3aa1ecc6a30d6613d980700c21ab3",
+      "updated_at": "2026-04-22T10:08:10.533664Z"
+    }
+  ]
 }
