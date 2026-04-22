@@ -1,27 +1,5 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-04-22T09:56:18.541783Z",
-  "profiles": [
-    {
-      "id": "appopt",
-      "name": "骁龙6+2架构线程优化",
-      "author": "001",
-      "version": "1.0.0",
-      "summary": "一个支持自定义规则的安卓应用线程CPU亲和性优化程序",
-      "target_socs": [
-        "sm8750",
-        "sm8850"
-      ],
-      "brands": [],
-      "android_range": {
-        "min_api": 31,
-        "max_api": 36
-      },
-      "module_version": "1.6.3",
-      "tags": [],
-      "download_url": "https://raw.githubusercontent.com/Hakunm/appopthub-configs/main/packages/appopt.zip",
-      "sha256": "4ac30ad1d5cd02d97165fd514b872ed665c160c752f0cd5fc5fcb8254a2fb295",
-      "updated_at": "2026-04-22T09:56:18.541783Z"
-    }
-  ]
+  "generated_at": "2026-04-22T09:58:12.389055Z",
+  "profiles": []
 }
