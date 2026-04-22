@@ -66,6 +66,7 @@ def main() -> int:
         "id": metadata["id"],
         "name": metadata["name"],
         "author": metadata["author"],
+        "contact": export_data.get("contact", "").strip(),
         "version": metadata["version"],
         "summary": metadata["summary"],
         "target_socs": metadata.get("target_socs", []),
@@ -119,6 +120,7 @@ def build_package_from_conf(export_data: dict, source_file: Path, existing: dict
         "id": export_data["suggested_profile_id"],
         "name": export_data["title"],
         "author": export_data["author_name"],
+        "contact": export_data.get("contact", "").strip(),
         "version": version,
         "summary": export_data["summary"],
         "target_socs": split_lines(export_data.get("target_socs", "")),
@@ -149,6 +151,11 @@ def validate_existing_zip(source_file: Path) -> bytes:
 
 
 def build_readme(export_data: dict) -> str:
+    tuning_label = {
+        "low": "省电",
+        "medium": "平衡",
+        "high": "性能",
+    }.get(str(export_data.get("risk_level", "")).strip(), "平衡")
     lines = [
         f"# {export_data['title']}",
         "",
@@ -157,10 +164,11 @@ def build_readme(export_data: dict) -> str:
         "## 投稿信息",
         "",
         f"- 作者：{export_data.get('author_name', '').strip()}",
+        f"- 联系方式：{export_data.get('contact', '').strip() or '未填写'}",
         f"- SoC：{export_data.get('target_socs', '').strip()}",
         f"- 设备：{export_data.get('devices', '').strip()}",
         f"- Android：{export_data.get('android_versions', '').strip()}",
-        f"- 风险等级：{export_data.get('risk_level', '').strip()}",
+        f"- 配置倾向：{tuning_label}",
     ]
     notes = export_data.get("notes", "").strip()
     if notes:
